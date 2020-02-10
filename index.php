@@ -8,33 +8,47 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Set variables we will be checking
-    $userEmail = $_POST['email'];
-    $userStreet = $_POST['street'];
-    $userStreetNumber = $_POST['streetnumber'];
+    $userEmail = $userStreet = $userStreetNumber = '';
     $userCity = $_POST['city'];
     $userZip = $_POST['zipcode'];
 
     // Check if valid email format, otherwise send alert
-    if (filter_var($userEmail, FILTER_VALIDATE_EMAIL) || empty($userEmail)) {
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) || empty($_POST['email'])) {
         echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid email!</div>";
     } else {
         $userEmail = $_POST['email'];
     }
 
     // Verify street name is only letters and whitespace
-    if (preg_match("/[a-zA-Z0-9 ]\\.*$/", $userStreet) || empty($userStreet)) {
-        echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid street name! (letters, whitespace, period)!</div>";
+    if (preg_match("/[a-zA-Z0-9 ]\\.*$/", $_POST['street']) || empty($_POST['street'])) {
+        echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid street name! (letters, spaces, numbers, periods)!</div>";
     } else {
         $userStreet = $_POST['street'];
     }
 
-    // Verify street number as only numbers and not empty
-    if (preg_match("/[0-9]/", $userStreetNumber) || empty($userStreetNumber)) {
+    // Verify city name
+    if (preg_match("/[a-zA-Z ]*$/", $_POST['city']) || empty($_POST['city'])) {
+        echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid city name! (letters, spaces, numbers, periods)!</div>";
+    } else {
+        $userStreet = $_POST['city'];
+    }
+
+    // Verify streetnumber as only numbers and not empty
+    if (preg_match("/[0-9]/", $_POST['streetnumber']) || empty($_POST['streetnumber'])) {
         echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid street number! (Only real numbers)</div>";
     } else {
-        $userStreetNumber = $_POST['']
+        $userStreetNumber = $_POST['streetnumber'];
+    }
+
+    // Verify zip as only numbers and not empty
+    if (preg_match("/[0-9]/", $_POST['zipcode']) || empty($_POST['zipcode'])) {
+        echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid zip code! (Only real numbers)</div>";
+    } else {
+        $userStreetNumber = $_POST['zipcode'];
     }
 }
+
+
 
 
 
