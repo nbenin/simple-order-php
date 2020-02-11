@@ -59,14 +59,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 // Handle submitting of form
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+    // Counter for working on total value
     if ($_SESSION['totalvalue'] != 0) {
         $totalValue = $_SESSION['totalvalue'];
+        $chosenFoods = $_SESSION['chosenfoods'];
+    } else {
+        $chosenFoods = [];
+        $_SESSION['chosenfoods'] = [];
     }
-    $userEmail = $userStreet = $userStreetNumber = $userCity = $userZip = '';
-    $_SESSION['email'] = $_SESSION['street'] = $_SESSION['streetnumber'] = $_SESSION['city'] = $_SESSION['zipcode'] = '';
 
     // Set variables we will be checking and counter for success
     $successCounter = 0;
+    $userEmail = $userStreet = $userStreetNumber = $userCity = $userZip = '';
+    $_SESSION['email'] = $_SESSION['street'] = $_SESSION['streetnumber'] = $_SESSION['city'] = $_SESSION['zipcode'] = '';
 
     // Check if valid email format, otherwise send alert
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) || empty($_POST['email'])) {
@@ -118,16 +123,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Ordering food total
     $userChoices = $_POST['products'];
-    $chosenFoods = [];
 
     for ($i = 0; $i < count($products); $i++) {
         if (isset($userChoices[$i])) {
             array_push($chosenFoods, $products[$i]);
+            array_push($_SESSION['chosenfoods'], $products[$i]);
             $totalValue += $products[$i]{'price'};
             $_SESSION['totalvalue'] = $totalValue;
         }
     }
-
 }
 
 // Function from w3 schools to protect from $_SERVER['PHP_SELF'] hack
@@ -137,6 +141,5 @@ function test_input($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
-
 
 require 'form-view.php';
