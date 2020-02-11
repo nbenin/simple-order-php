@@ -10,9 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Set variables we will be checking
     $userEmail = $_POST['email'];
     $userStreet = $_POST['street'];
-    $userStreetNumber = (int)$_POST['streetnumber'];
+    $userStreetNumber = $_POST['streetnumber'];
     $userCity = $_POST['city'];
-    $userZip = (int)$_POST['zipcode'];
+    $userZip = $_POST['zipcode'];
 
     // Check if valid email format, otherwise send alert
     if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL) || empty($userEmail)) {
@@ -35,12 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Verify zip as only numbers and not empty
-    else if (is_numeric($userZip) || empty($userZip)) {
+    else if (!is_numeric($userZip) || empty($userZip)) {
         echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid zip code! (Only real numbers)</div>";
     }
 
+    // Else success
     else {
-        echo "Noice";
+        echo "<div class='alert alert-success'><strong>Good Job! </strong> Form submitted succesfully!</div>";
     }
 }
 
