@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Else success
     if ($successCounter == 5) {
         echo "<div class='alert alert-success'><strong>Good Job! </strong> Form submitted succesfully!</div>";
-        session_unset();
+        unset($_SESSION['userEmail']);
         $successCounter = 0;
     }
 }
@@ -66,8 +66,6 @@ function test_input($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
-
-
 
 
 
