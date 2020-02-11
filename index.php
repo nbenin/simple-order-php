@@ -5,7 +5,7 @@ declare(strict_types=1);
 //we are going to use session variables so we need to enable sessions
 session_start();
 
-whatIsHappening();
+//whatIsHappening();
 function whatIsHappening() {
     echo '<h2>$_SERVER</h2>';
     var_dump($_SERVER);
@@ -17,6 +17,34 @@ function whatIsHappening() {
     var_dump($_COOKIE);
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
+}
+
+// Function from w3 schools to protect from $_SERVER['PHP_SELF'] hack
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+// Set total value to 0
+$totalValue = 0;
+
+// Handle closing of the tab or changing to other food tabs
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if ($_SESSION['email'] != '' || $_SESSION['street'] != '' || $_SESSION['streetnumber'] != ''
+        || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '' || $_SESSION['totalvalue'] != 0
+        || $_SESSION['chosenfoods'] != '') {
+
+        $totalValue = $_SESSION['totalvalue'];
+        $userEmail = $_SESSION['email'];
+        $userStreet = $_SESSION['street'];
+        $userStreetNumber = $_SESSION['streetnumber'];
+        $userCity = $_SESSION['city'];
+        $userZip = $_SESSION['zipcode'];
+        $chosenFoods = $_SESSION['chosenfoods'];
+
+    }
 }
 
 // Set food depending on foodGET
@@ -38,22 +66,6 @@ if ($food == null || $food == 1) {
         ['name' => 'Sprite', 'price' => 2],
         ['name' => 'Ice-tea', 'price' => 3],
     ];
-}
-$totalValue = 0;
-
-// Handle closing of the tab or changing to other food tabs
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if ($_SESSION['email'] != '' || $_SESSION['street'] != '' || $_SESSION['streetnumber'] != ''
-        || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '' || $_SESSION['totalvalue'] != 0) {
-
-        $totalValue = $_SESSION['totalvalue'];
-        $userEmail = $_SESSION['email'];
-        $userStreet = $_SESSION['street'];
-        $userStreetNumber = $_SESSION['streetnumber'];
-        $userCity = $_SESSION['city'];
-        $userZip = $_SESSION['zipcode'];
-
-    }
 }
 
 // Handle submitting of form
@@ -115,13 +127,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Else success
     if ($successCounter == 5) {
-        echo "<div class='alert alert-success'><strong>Good Job! </strong> Form submitted succesfully!</div>";
+
+        // find delivery time depending on how much was ordered
+        $deliveryTime = time();
+        if ($totalValue < 20) {
+            $deliveryTime += 45 * 60;
+        } else {
+            $deliveryTime += 120 * 60;
+        }
+        $deliveryTime = gmdate("H:i:s", $deliveryTime);
+
+        // Alert success and delivery time
+        echo "<div class='alert alert-success'><strong>Good Job! </strong> Form submitted succesfully! You order will arrive at $deliveryTime</div>";
+
+        // Mail if success
+        $orderList = implode($chosenFoods);
+        $confirmationEmail = 'You ordered: ' . $orderList . '/nIt costs: ' . $totalValue . '/nIt will arrive at: ' . $deliveryTime;
+        mail($userEmail, "Your Order", $confirmationEmail);
+        if (mail($userEmail, "Your Order", $confirmationEmail)) {
+            echo("Message successfully sent!");
+        } else {
+            echo("Message delivery failed...");
+        }
         $userEmail = $_SESSION['email'] = '';
         $successCounter = 0;
         $_SESSION['totalvalue'] = $totalValue = 0;
     }
 
-    // Ordering food total
+    // Ordering food total and storing chosen stuff for later
     $userChoices = $_POST['products'];
 
     for ($i = 0; $i < count($products); $i++) {
@@ -132,14 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['totalvalue'] = $totalValue;
         }
     }
-}
-
-// Function from w3 schools to protect from $_SERVER['PHP_SELF'] hack
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
 }
 
 require 'form-view.php';
