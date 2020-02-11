@@ -26,7 +26,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="text" id="email" name="email" class="form-control" value="<?php echo $userEmail ?>"/>
+                <input type="text" id="email" name="email" class="form-control" value="<?php echo $_SESSION['userEmail'] ?>"/>
             </div>
             <div></div>
         </div>
@@ -37,21 +37,21 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="street">Street:</label>
-                    <input type="text" name="street" id="street" class="form-control" value="<?php echo $userStreet ?>"/>
+                    <input type="text" name="street" id="street" class="form-control" value="<?php echo $_SESSION['userStreet'] ?>"/>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?php echo $userStreetNumber ?>"/>
+                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?php echo $_SESSION['userStreetNumber'] ?>"/>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="city">City:</label>
-                    <input type="text" id="city" name="city" class="form-control" value="<?php echo $userCity ?>"/>
+                    <input type="text" id="city" name="city" class="form-control" value="<?php echo $_SESSION['userCity'] ?>"/>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?php echo $userZip ?>"/>
+                    <input type="text" id="zipcode" name="zipcode" class="form-control" value="<?php echo $_SESSION['userZip'] ?>"/>
                 </div>
             </div>
         </fieldset>
