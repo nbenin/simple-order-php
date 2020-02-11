@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (preg_match("/[a-zA-Z0-9 ]\\./", $_POST['street']) || empty($_POST['street'])) {
         echo "<div class='alert alert-warning'><strong>Oops! </strong>Please enter valid street name! (letters, spaces, numbers, periods)!</div>";
     } else {
-        $userStreet = $_SESSION['userStreet'] = ($_POST['street']);
+        $userStreet = $_SESSION['userStreet'] = test_input($_POST['street']);
         $successCounter++;
     }
 
@@ -68,7 +68,6 @@ function test_input($data) {
 }
 
 
-
 whatIsHappening();
 function whatIsHappening() {
     echo '<h2>$_SERVER</h2>';
@@ -83,22 +82,26 @@ function whatIsHappening() {
     var_dump($_SESSION);
 }
 
+// Set food depending on foodGET
+$food = $_GET['food'];
+
 //your products with their price.
-$products = [
-    ['name' => 'Club Ham', 'price' => 3.20],
-    ['name' => 'Club Cheese', 'price' => 3],
-    ['name' => 'Club Cheese & Ham', 'price' => 4],
-    ['name' => 'Club Chicken', 'price' => 4],
-    ['name' => 'Club Salmon', 'price' => 5]
-];
-
-$products = [
-    ['name' => 'Cola', 'price' => 2],
-    ['name' => 'Fanta', 'price' => 2],
-    ['name' => 'Sprite', 'price' => 2],
-    ['name' => 'Ice-tea', 'price' => 3],
-];
-
+if ($food == null || $food == 1) {
+    $products = [
+        ['name' => 'Club Ham', 'price' => 3.20],
+        ['name' => 'Club Cheese', 'price' => 3],
+        ['name' => 'Club Cheese & Ham', 'price' => 4],
+        ['name' => 'Club Chicken', 'price' => 4],
+        ['name' => 'Club Salmon', 'price' => 5]
+    ];
+} else {
+    $products = [
+        ['name' => 'Cola', 'price' => 2],
+        ['name' => 'Fanta', 'price' => 2],
+        ['name' => 'Sprite', 'price' => 2],
+        ['name' => 'Ice-tea', 'price' => 3],
+    ];
+}
 $totalValue = 0;
 
 require 'form-view.php';
