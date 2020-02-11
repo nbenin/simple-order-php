@@ -5,7 +5,7 @@ declare(strict_types=1);
 //we are going to use session variables so we need to enable sessions
 session_start();
 
-//whatIsHappening();
+whatIsHappening();
 function whatIsHappening() {
     echo '<h2>$_SERVER</h2>';
     var_dump($_SERVER);
@@ -43,18 +43,25 @@ $totalValue = 0;
 
 // Handle closing of the tab or changing to other food tabs
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if ($_SESSION['email'] != '' || $_SESSION['street'] != '' || $_SESSION['streetnumber'] != '' || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '') {
+    if ($_SESSION['email'] != '' || $_SESSION['street'] != '' || $_SESSION['streetnumber'] != ''
+        || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '' || $_SESSION['totalvalue'] != 0) {
+
+        $totalValue = $_SESSION['totalvalue'];
         $userEmail = $_SESSION['email'];
         $userStreet = $_SESSION['street'];
         $userStreetNumber = $_SESSION['streetnumber'];
         $userCity = $_SESSION['city'];
         $userZip = $_SESSION['zipcode'];
+
     }
 }
 
 // Handle submitting of form
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+    if ($_SESSION['totalvalue'] != 0) {
+        $totalValue = $_SESSION['totalvalue'];
+    }
     $userEmail = $userStreet = $userStreetNumber = $userCity = $userZip = '';
     $_SESSION['email'] = $_SESSION['street'] = $_SESSION['streetnumber'] = $_SESSION['city'] = $_SESSION['zipcode'] = '';
 
@@ -106,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<div class='alert alert-success'><strong>Good Job! </strong> Form submitted succesfully!</div>";
         $userEmail = $_SESSION['email'] = '';
         $successCounter = 0;
+        $_SESSION['totalvalue'] = $totalValue = 0;
     }
 
     // Ordering food total
@@ -115,9 +123,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     for ($i = 0; $i < count($products); $i++) {
         if (isset($userChoices[$i])) {
             array_push($chosenFoods, $products[$i]);
+            $totalValue += $products[$i]{'price'};
+            $_SESSION['totalvalue'] = $totalValue;
         }
     }
-    var_dump($chosenFoods);
+
 }
 
 // Function from w3 schools to protect from $_SERVER['PHP_SELF'] hack
