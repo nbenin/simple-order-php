@@ -4,7 +4,42 @@ declare(strict_types=1);
 
 //we are going to use session variables so we need to enable sessions
 session_start();
-whatIsHappening();
+
+//whatIsHappening();
+function whatIsHappening() {
+    echo '<h2>$_SERVER</h2>';
+    var_dump($_SERVER);
+    echo '<h2>$_GET</h2>';
+    var_dump($_GET);
+    echo '<h2>$_POST</h2>';
+    var_dump($_POST);
+    echo '<h2>$_COOKIE</h2>';
+    var_dump($_COOKIE);
+    echo '<h2>$_SESSION</h2>';
+    var_dump($_SESSION);
+}
+
+// Set food depending on foodGET
+$food = $_GET['food'];
+
+// Our products with their price.
+if ($food == null || $food == 1) {
+    $products = [
+        ['name' => 'Club Ham', 'price' => 3.20],
+        ['name' => 'Club Cheese', 'price' => 3],
+        ['name' => 'Club Cheese & Ham', 'price' => 4],
+        ['name' => 'Club Chicken', 'price' => 4],
+        ['name' => 'Club Salmon', 'price' => 5]
+    ];
+} else {
+    $products = [
+        ['name' => 'Cola', 'price' => 2],
+        ['name' => 'Fanta', 'price' => 2],
+        ['name' => 'Sprite', 'price' => 2],
+        ['name' => 'Ice-tea', 'price' => 3],
+    ];
+}
+$totalValue = 0;
 
 // Handle closing of the tab or changing to other food tabs
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
@@ -72,6 +107,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $userEmail = $_SESSION['email'] = '';
         $successCounter = 0;
     }
+
+    // Ordering food total
+    $userChoices = $_POST['products'];
+    $chosenFoods = [];
+
+    for ($i = 0; $i < count($products); $i++) {
+        if (isset($userChoices[$i])) {
+            array_push($chosenFoods, $products[$i]);
+        }
+    }
+    var_dump($chosenFoods);
 }
 
 // Function from w3 schools to protect from $_SERVER['PHP_SELF'] hack
@@ -82,39 +128,5 @@ function test_input($data) {
     return $data;
 }
 
-function whatIsHappening() {
-    echo '<h2>$_SERVER</h2>';
-    var_dump($_SERVER);
-    echo '<h2>$_GET</h2>';
-    var_dump($_GET);
-    echo '<h2>$_POST</h2>';
-    var_dump($_POST);
-    echo '<h2>$_COOKIE</h2>';
-    var_dump($_COOKIE);
-    echo '<h2>$_SESSION</h2>';
-    var_dump($_SESSION);
-}
-
-// Set food depending on foodGET
-$food = $_GET['food'];
-
-// Our products with their price.
-if ($food == null || $food == 1) {
-    $products = [
-        ['name' => 'Club Ham', 'price' => 3.20],
-        ['name' => 'Club Cheese', 'price' => 3],
-        ['name' => 'Club Cheese & Ham', 'price' => 4],
-        ['name' => 'Club Chicken', 'price' => 4],
-        ['name' => 'Club Salmon', 'price' => 5]
-    ];
-} else {
-    $products = [
-        ['name' => 'Cola', 'price' => 2],
-        ['name' => 'Fanta', 'price' => 2],
-        ['name' => 'Sprite', 'price' => 2],
-        ['name' => 'Ice-tea', 'price' => 3],
-    ];
-}
-$totalValue = 0;
 
 require 'form-view.php';
