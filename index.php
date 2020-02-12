@@ -34,11 +34,12 @@ $totalValue = 0;
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if ($_SESSION['email'] != '' || $_SESSION['street'] != '' || $_SESSION['streetnumber'] != ''
         || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '' || $_SESSION['totalvalue'] != 0
-        || $_SESSION['chosenfoods'] != '') {
+        || $_SESSION['chosenfoods'] != '' || isset($_COOKIE['totalCost'])) {
 
         if (isset($_COOKIE['totalCost'])) {
             $totalValue = $_COOKIE['totalCost'];
-        } else {
+        }
+        if ($_SESSION['totalvalue'] != 0) {
             $totalValue = $_SESSION['totalvalue'];
         }
         $userEmail = $_SESSION['email'];
@@ -171,8 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['totalvalue'] = $totalValue;
         }
     }
-
 }
 
 require 'form-view.php';
-setcookie('totalCost', $totalValue, time() + 1800);
+setcookie('totalCost', strval($totalValue), time() + 1800);
