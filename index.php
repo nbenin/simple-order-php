@@ -36,7 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         || $_SESSION['city'] != '' || $_SESSION['zipcode'] != '' || $_SESSION['totalvalue'] != 0
         || $_SESSION['chosenfoods'] != '') {
 
-        $totalValue = $_SESSION['totalvalue'];
+        if (isset($_COOKIE['totalCost'])) {
+            $totalValue = $_COOKIE['totalCost'];
+        } else {
+            $totalValue = $_SESSION['totalvalue'];
+        }
         $userEmail = $_SESSION['email'];
         $userStreet = $_SESSION['street'];
         $userStreetNumber = $_SESSION['streetnumber'];
@@ -141,14 +145,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<div class='alert alert-success'><strong>Good Job! </strong> Form submitted succesfully! You order will arrive at $deliveryTime</div>";
 
         // Mail if success
-        $orderList = implode($chosenFoods);
-        $confirmationEmail = 'You ordered: ' . $orderList . '/nIt costs: ' . $totalValue . '/nIt will arrive at: ' . $deliveryTime;
-        mail($userEmail, "Your Order", $confirmationEmail);
-        if (mail($userEmail, "Your Order", $confirmationEmail)) {
-            echo("Message successfully sent!");
-        } else {
-            echo("Message delivery failed...");
+        $orderList = '';
+        for ($x = 0; $x < count($chosenFoods); $x++) {
+            $orderList .= $chosenFoods[$x]{name} . ', ';
         }
+        var_dump($orderList);
+        $confirmationEmail = 'You ordered: ' . $orderList . ' It costs: ' . $totalValue . ' It will arrive at: ' . $deliveryTime;
+        echo $confirmationEmail;
+        mail($userEmail, "Your Order", $confirmationEmail);
+
+        // Set variables back to 0 after
         $userEmail = $_SESSION['email'] = '';
         $successCounter = 0;
         $_SESSION['totalvalue'] = $totalValue = 0;
@@ -165,6 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['totalvalue'] = $totalValue;
         }
     }
+
 }
 
 require 'form-view.php';
+setcookie('totalCost', $totalValue, time() + 1800);
